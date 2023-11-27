@@ -1,13 +1,12 @@
 import { Module } from '@nestjs/common';
-import { UsersService } from './users.service';
-import { UsersController } from './users.controller';
 import { MongooseModule } from '@nestjs/mongoose';
-import { User,UserSchema } from '../schemas/users.schema';
+import { AuthController } from './auth.controller';
+import { AuthService } from './auth.service';
+import { AuthUser,AuthUserSchema } from '../schemas/auth-user.schema';
 import { PassportModule } from '@nestjs/passport';
 import { JwtModule } from '@nestjs/jwt';
-import { ConfigService } from '@nestjs/config';
-import { JwtStrategy } from '../auth/jwt.strategy';
-
+import { JwtStrategy } from './jwt.strategy';
+import { ConfigModule, ConfigService } from '@nestjs/config';
 @Module({
   imports: [
     PassportModule.register({ defaultStrategy: 'jwt' }),
@@ -22,10 +21,11 @@ import { JwtStrategy } from '../auth/jwt.strategy';
         };
       },
     }),
-    MongooseModule.forFeature([{ name: User.name, schema: UserSchema }])
+    MongooseModule.forFeature([{ name: AuthUser.name, schema: AuthUserSchema }]),
   ],
-  controllers: [UsersController],
-  providers: [UsersService,JwtStrategy],
+  controllers: [AuthController],
+  providers: [AuthService, JwtStrategy],
   exports: [JwtStrategy,JwtModule, PassportModule],
 })
-export class UsersModule {}
+export class AuthModule {}
+ 
